@@ -3,60 +3,73 @@ syntax = "proto3";
 package api.user.v1;
 
 import "google/api/annotations.proto";
+import "validate/validate.proto";
 
 option go_package = "geek-user-service/api/user/v1;v1";
 
 service User {
-    rpc UserSignUpCode (UserSignUpCodeRequest) returns (UserSignUpCodeReply) {
+    rpc UserSignUp (UserSignUpRequest) returns (UserSignUpReply) {
         option (google.api.http) = {
-            get: "/user/v1/"
+            post: "/user/v1/signup"
+            body: "*"
         };
     };
-    rpc UserSignUp (UserSignUpRequest) returns (UserSignUpReply);
-    rpc UserLogin (UserLoginRequest) returns (UserLoginReply);
-    rpc UserUpdate (UserUpdateRequest) returns (UserUpdateReply);
-    rpc GetUser (GetUserRequest) returns (GetUserReply);
+    rpc UserLogin (UserLoginRequest) returns (UserLoginReply) {
+        option (google.api.http) = {
+            post: "/user/v1/login"
+            body: "*"
+        };
+    };
+    rpc UserUpdate (UserUpdateRequest) returns (UserUpdateReply) {
+        option (google.api.http) = {
+            post: "/user/v1/update"
+            body: "*"
+        };
+    };
 }
 
-message UserSignUpCodeRequest {
-    string phone_number = 1;
-}
-
-message UserSignUpCodeReply {
-    int32 code = 1;
-    string message = 2;
-}
 
 message UserSignUpRequest {
-    string user_name = 1;
-    string password = 2;
+    string user_name = 1 [(validate.rules).string = {min_len: 6, max_len: 32}];
+    string password = 2 [(validate.rules).string = {min_len: 6, max_len: 32}];
 }
 
 message UserSignUpReply {
-    string user_id = 1;
-    string user_name = 2;
+    message UserSignupInfo {
+        int64 user_id = 1;
+        string user_name = 2;
+    }
+    int32 code = 1;
+    string message = 2;
+    UserSignupInfo data = 3;
 }
 
 message UserLoginRequest {
-
+    string user_name = 1 [(validate.rules).string = {min_len: 6, max_len: 32}];
+    string password = 2 [(validate.rules).string = {min_len: 6, max_len: 32}];
 }
 
 message UserLoginReply {
-
+    message UserLoginInfo {
+        int64 user_id = 1;
+        string user_name = 2;
+        string login_token = 3;
+        string refresh_token = 4;
+    }
+    int32 code = 1;
+    string message = 2;
+    UserLoginInfo data = 3;
 }
 
 message UserUpdateRequest {
-
+    string user_name = 1 [(validate.rules).string = {min_len: 6, max_len: 32}];
+    string password = 2 [(validate.rules).string = {min_len: 6, max_len: 32}];
+    string new_name = 3 [(validate.rules).string = {min_len: 6, max_len: 32}];
 }
 
 message UserUpdateReply {
-
+    int32 code = 1;
+    string message = 2;
+    UserLoginReply.UserLoginInfo data = 3;
 }
 
-message GetUserRequest {
-
-}
-
-message  GetUserReply {
-
-}

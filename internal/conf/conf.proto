@@ -21,14 +21,25 @@ message Server {
     string addr = 2;
     google.protobuf.Duration timeout = 3;
   }
+  message SnowFlake {
+    uint32 machine_id = 1;
+  }
   HTTP http = 1;
   GRPC grpc = 2;
+  SnowFlake snowflake = 3;
 }
 
 message Data {
   message Database {
     string driver = 1;
-    string source = 2;
+    string user = 2;
+    string password = 3;
+    string host = 4;
+    string schema = 5;
+    int32 max_open_conns = 6;
+    int32 max_idle_conns = 7;
+    int32 conn_max_life_time = 8;
+    bool debug = 9;
   }
   message Redis {
     string network = 1;

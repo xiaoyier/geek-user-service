@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"geek-user-service/internal/pkg/snowflake"
 	"os"
 
 	"geek-user-service/internal/conf"
@@ -26,7 +27,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "conf", "configs", "config path, eg: -conf config.yaml")
 }
 
 func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server) *kratos.App {
@@ -68,6 +69,7 @@ func main() {
 		panic(err)
 	}
 
+	snowflake.Init(uint16(bc.Server.Snowflake.MachineId))
 	app, cleanup, err := initApp(bc.Server, bc.Data, logger)
 	if err != nil {
 		panic(err)
