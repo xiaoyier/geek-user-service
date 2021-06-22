@@ -5,6 +5,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/pkg/errors"
 	"time"
+	"context"
 )
 
 func init() {
@@ -40,7 +41,7 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 	}
 }
 
-func (r *userRepo) GetUserByUserName(userName string) (*biz.User, error) {
+func (r *userRepo) GetUserByUserName(ctx context.Context, userName string) (*biz.User, error) {
 	user := new(UserInfo)
 	d := r.data.db.Where("user_name = ?", userName).First(&user)
 	if d.RecordNotFound() {
@@ -58,7 +59,7 @@ func (r *userRepo) GetUserByUserName(userName string) (*biz.User, error) {
 	}, nil
 }
 
-func (r *userRepo) GetUserByUserID(userId int64) (*biz.User, error) {
+func (r *userRepo) GetUserByUserID(ctx context.Context, userId int64) (*biz.User, error) {
 	user := new(UserInfo)
 	d := r.data.db.Where("user_id = ?", userId).First(&user)
 	if d.RecordNotFound() {
@@ -76,7 +77,7 @@ func (r *userRepo) GetUserByUserID(userId int64) (*biz.User, error) {
 	}, nil
 }
 
-func (r *userRepo) CreateUser(user *biz.User) error {
+func (r *userRepo) CreateUser(ctx context.Context, user *biz.User) error {
 	// DO -> PO
 	userInfo := UserInfo{
 		UserID: user.UserID,
@@ -90,7 +91,7 @@ func (r *userRepo) CreateUser(user *biz.User) error {
 	return nil
 }
 
-func (r *userRepo) UpdateUser(user *biz.User) error {
+func (r *userRepo) UpdateUser(ctx context.Context, user *biz.User) error {
 	// DO -> PO
 	userInfo := UserInfo{
 		UserID: user.UserID,
@@ -105,19 +106,19 @@ func (r *userRepo) UpdateUser(user *biz.User) error {
 }
 
 
-func (r *userRepo) GetUserByUserNameFromRedis(userName string) (*biz.User, error) {
+func (r *userRepo) GetUserByUserNameFromRedis(ctx context.Context, userName string) (*biz.User, error) {
 	return nil, nil
 }
 
-func (r *userRepo) GetUserByUserIDFromRedis(userId int64) (*biz.User, error) {
+func (r *userRepo) GetUserByUserIDFromRedis(ctx context.Context, userId int64) (*biz.User, error) {
 	return nil, nil
 }
 
-func (r *userRepo) CreateUserFromRedis(user *biz.User) error {
+func (r *userRepo) CreateUserFromRedis(ctx context.Context, user *biz.User) error {
 	return nil
 }
 
-func (r *userRepo) UpdateUserFromRedis(user *biz.User) error {
+func (r *userRepo) UpdateUserFromRedis(ctx context.Context, user *biz.User) error {
 	return nil
 }
 

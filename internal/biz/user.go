@@ -23,16 +23,16 @@ type User struct {
 // UserRepo repo
 type UserRepo interface {
 	// mysql
-	GetUserByUserName(userName string) (*User, error)
-	GetUserByUserID(userId int64) (*User, error)
-	CreateUser(user *User) error
-	UpdateUser(user *User) error
+	GetUserByUserName(ctx context.Context, userName string) (*User, error)
+	GetUserByUserID(ctx context.Context, userId int64) (*User, error)
+	CreateUser(ctx context.Context, user *User) error
+	UpdateUser(ctx context.Context, user *User) error
 
 	// redis
-	GetUserByUserNameFromRedis(userName string) (*User, error)
-	GetUserByUserIDFromRedis(userId int64) (*User, error)
-	CreateUserFromRedis(user *User) error
-	UpdateUserFromRedis(user *User) error
+	GetUserByUserNameFromRedis(ctx context.Context, userName string) (*User, error)
+	GetUserByUserIDFromRedis(ctx context.Context, userId int64) (*User, error)
+	CreateUserFromRedis(ctx context.Context, user *User) error
+	UpdateUserFromRedis(ctx context.Context, user *User) error
 }
 
 type UserUsecase struct {
