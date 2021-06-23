@@ -48,7 +48,7 @@ func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 
 func (u *UserUsecase) SignUp(ctx context.Context, user *User) error {
 	// TODO: redis
-	result, err := u.repo.GetUserByUserName(user.UserName)
+	result, err := u.repo.GetUserByUserName(ctx, user.UserName)
 	if err != nil && !sysErrors.Is(err, ErrRecordNotFound) {
 		return err
 	}
@@ -64,7 +64,7 @@ func (u *UserUsecase) SignUp(ctx context.Context, user *User) error {
 
 	user.UserID = int64(userId)
 	user.Password = MD5Encrypt(user.Password)
-	err = u.repo.CreateUser(user)
+	err = u.repo.CreateUser(ctx, user)
 	return err
 }
 
@@ -72,9 +72,9 @@ func (u *UserUsecase) Login(ctx context.Context, user *User) (result *User, err 
 
 	// TODO: redis
 	if user.UserID != 0 {
-		result, err = u.repo.GetUserByUserID(user.UserID)
+		result, err = u.repo.GetUserByUserID(ctx, user.UserID)
 	} else if len(user.UserName) > 0 {
-		result, err = u.repo.GetUserByUserName(user.UserName)
+		result, err = u.repo.GetUserByUserName(ctx, user.UserName)
 	}
 
 	if err != nil {
@@ -104,7 +104,7 @@ func (u *UserUsecase) Login(ctx context.Context, user *User) (result *User, err 
 
 func (u *UserUsecase) Update(ctx context.Context, user *User, newName string) (result *User, err error) {
 	// TODO: redis
-	result, err = u.repo.GetUserByUserName(user.UserName)
+	result, err = u.repo.GetUserByUserName(ctx, user.UserName)
 	if err != nil {
 		return
 	}
@@ -120,7 +120,7 @@ func (u *UserUsecase) Update(ctx context.Context, user *User, newName string) (r
 	}
 
 	result.UserName = newName
-	err = u.repo.UpdateUser(result)
+	err = u.repo.UpdateUser(ctx, result)
 	if err != nil {
 		return
 	}
